@@ -60,7 +60,7 @@ if __name__ == "__main__":
     # 1 = kinect & 0 = webcam 
     
     while True:
-        print("Reading frame")
+        
         frame = None
         r = True
         if inp_mode == 0:
