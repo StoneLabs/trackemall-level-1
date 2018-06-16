@@ -3,7 +3,6 @@ import time
 import numpy as np
 import cv2
 from freenect import sync_get_depth as get_depth, sync_get_video as get_video
-from darknet.pydarknet import Detector, Image
 from numpy import asarray
 from PIL import Image as PImage
 
@@ -61,6 +60,7 @@ if __name__ == "__main__":
     # 1 = kinect & 0 = webcam 
     
     while True:
+        print("Reading frame")
         frame = None
         r = True
         if inp_mode == 0:
@@ -78,10 +78,10 @@ if __name__ == "__main__":
             # multi threading magic
 
             # receive results (not here but somewhere):
-
-            for cat, score, bounds in results:
-                x, y, w, h = bounds
-                cv2.rectangle(frame, (int(x-w/2),int(y-h/2)),(int(x+w/2),int(y+h/2)),(255,0,0))
-                cv2.putText(frame, str(cat.decode("utf-8")), (int(x), int(y)), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 0))
+#            for cat, score, bounds in results:
+#                x, y, w, h = bounds
+#                cv2.rectangle(frame, (int(x-w/2),int(y-h/2)),(int(x+w/2),int(y+h/2)),(255,0,0))
+#                cv2.putText(frame, str(cat.decode("utf-8")), (int(x), int(y)), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 0))
 
             container.setImage(asarray(PImage.fromarray(frame).rotate(-90)))
+            cv2.waitKey(1) # find better (non-cv) solution for qt refreshing EDIT: no time -> just keep it
