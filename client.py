@@ -9,6 +9,9 @@ from PIL import Image as PImage
 from pyqtgraph.Qt import QtGui, QtCore
 import pyqtgraph as pg
 
+target_fps = 24
+ms_sleep = 1/target_fps
+
 if __name__ == "__main__":
 
     ##########################
@@ -59,8 +62,10 @@ if __name__ == "__main__":
     # and write to inp_mode
     # 1 = kinect & 0 = webcam 
     
+    time_outcounter = 0
     while True:
-        
+        time_start = time.time()
+
         frame = None
         r = True
         if inp_mode == 0:
@@ -85,3 +90,17 @@ if __name__ == "__main__":
 
             container.setImage(asarray(PImage.fromarray(frame).rotate(-90)))
             cv2.waitKey(1) # find better (non-cv) solution for qt refreshing EDIT: no time -> just keep it
+
+            time_end = time.time()
+            time_sleep = ms_sleep - (time_end - time_start)
+            if time_sleep < 0:
+                time_outcounter += 1
+                if time_outcounter > 5:
+                    print("System cant keep up.")
+                    exit(1)
+            else:
+                time_outcounter = 0
+                time.sleep(time_sleep)
+        else:
+            print("Something's gone wrong i guess")
+            exit(1)
