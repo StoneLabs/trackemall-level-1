@@ -64,7 +64,9 @@ if __name__ == "__main__":
                     x, y, w, h = bounds
                     cv2.rectangle(frame, (int(x-w/2),int(y-h/2)),(int(x+w/2),int(y+h/2)),(255,0,0))
                     cv2.putText(frame, str(cat.decode("utf-8")), (int(x), int(y)), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 0))
-                container.setImage(asarray(PImage.fromarray(frame).rotate(-90)))
+                p_image = PImage.fromarray(frame)
+                p_image.save("rendered/" + str(frame_counter) + ".jpg", "JPEG")
+                container.setImage(asarray(p_image.rotate(-90)))
                 cv2.waitKey(1) # find better (non-cv) solution for qt refreshing EDIT: no time -> just keep it
             except:
                 pass
