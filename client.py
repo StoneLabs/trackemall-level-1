@@ -12,7 +12,7 @@ import pyqtgraph as pg
 import pickle
 import subprocess
 
-target_fps = 15
+target_fps = 10
 ms_sleep = 1/target_fps
 
 if __name__ == "__main__":
