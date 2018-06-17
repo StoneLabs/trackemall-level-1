@@ -12,7 +12,7 @@ import pyqtgraph as pg
 import pickle
 import subprocess
 
-target_fps = 15
+target_fps = 5
 ms_sleep = 1/target_fps
 
 if __name__ == "__main__":
@@ -83,12 +83,20 @@ if __name__ == "__main__":
 
         if r:
             with open("/tmp/tta_frame_" + str(frame_counter) + ".dat", "wb+") as handle:
-                pickle.dump(frame, handle)
+                time_up_start = time.time()
 
-                #bottleneck below
-                cmd = ['curl', '-i', '-X', 'POST', '-H', "Content-Type: multipart/form-data", '-F', "file=@/tmp/tta_frame_" + str(frame_counter) + ".dat", "http://192.168.12.213:2438/addFrame?id=" + str(frame_counter)]
+                pickle.dump(frame, handle)
+                # DUMP TO STRING?
+
+                # SEND TO SQL?
+                cmd = ['curl', '-i', '-X', 'POST', '-H', "Content-Type: multipart/form-data", '-F', "file=@/tmp/tta_frame_" + str(frame_counter) + ".dat", "http://127.0.0.1:2438/addFrame?id=" + str(frame_counter)]
                 prc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, input="")
-                
+
+                cmd = ['rm', "/tmp/tta_frame_" + str(frame_counter) + ".dat", "wb+"]
+                prc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, input="")
+
+                print("Upload delay in seconds: " + str(time.time() - time_up_start))
+
             # multi threading magic
 
             # receive results (not here but somewhere):
