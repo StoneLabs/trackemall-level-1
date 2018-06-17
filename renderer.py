@@ -12,7 +12,7 @@ import pyqtgraph as pg
 import pickle
 import subprocess
 
-target_fps = 15
+target_fps = 10
 seconds_buffer = 10
 ms_sleep = 1/target_fps
 
@@ -75,7 +75,7 @@ if __name__ == "__main__":
             time_outcounter += 1
             if time_outcounter > 5:
                 print("System cant keep up.")
-                exit(1)
+                #exit(1)
         else:
             time_outcounter = 0
             time.sleep(time_sleep)
