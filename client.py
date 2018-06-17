@@ -9,7 +9,10 @@ from PIL import Image as PImage
 from pyqtgraph.Qt import QtGui, QtCore
 import pyqtgraph as pg
 
-target_fps = 24
+import pickle
+import subprocess
+
+target_fps = 15
 ms_sleep = 1/target_fps
 
 if __name__ == "__main__":
@@ -63,6 +66,7 @@ if __name__ == "__main__":
     # 1 = kinect & 0 = webcam 
     
     time_outcounter = 0
+    frame_counter = 0
     while True:
         time_start = time.time()
 
@@ -78,8 +82,13 @@ if __name__ == "__main__":
             exit(1)
 
         if r:
-            # Send away
+            with open("/tmp/tta_frame_" + str(frame_counter) + ".dat", "wb+") as handle:
+                pickle.dump(frame, handle)
 
+                #bottleneck below
+                cmd = ['curl', '-i', '-X', 'POST', '-H', "Content-Type: multipart/form-data", '-F', "file=@/tmp/tta_frame_" + str(frame_counter) + ".dat", "http://192.168.12.213:2438/addFrame?id=" + str(frame_counter)]
+                prc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, input="")
+                
             # multi threading magic
 
             # receive results (not here but somewhere):
@@ -101,6 +110,7 @@ if __name__ == "__main__":
             else:
                 time_outcounter = 0
                 time.sleep(time_sleep)
+            frame_counter += 1
         else:
             print("Something's gone wrong i guess")
             exit(1)
